@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from Index.models import *
-from .models import CartTable, WishlistTable
+from .models import CartTable, WishlistTable, OrderTable
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.http import HttpResponseRedirect, JsonResponse
@@ -83,7 +83,7 @@ def subcategory_products(request, subcategory):
 
 def product_details(request, product_id):
     wishlist_in = check_wishlist_icon(request, product_id)
-    print(".....wishkist status.....",wishlist_in)
+    print(".....wishkist status.....", wishlist_in)
     category_all = categories.objects.all()
     sub_categories = categories.objects.order_by('-subcategory').values_list('subcategory', flat=True).distinct()
     product = ProductsDetails.objects.get(id=product_id)
@@ -147,6 +147,7 @@ def show_cart(request):
                 total_amount = 0
                 for item in products:
                     total_amount += item.total_price()
+                    request.session['totalAmount'] = total_amount
                 return render(request, 'store_ShoppingCart.html',
                               {'products': products, 'total': total_amount, 'cart_count': cart_count})
             else:
@@ -280,6 +281,36 @@ def show_wishlist(request):
             return render(request, 'store_WishListPage.html', {'products': wishlist_products})
         else:
             return redirect('login_redirect')
+
+
+"""CHECKOUT PAGE CODE"""
+
+
+def checkout(request):
+    if 'userid' not in request.session:
+        return redirect('login_redirect')
+    else:
+        if 'totalAmount' not in request.session:
+            return redirect('show_cart')
+        else:
+            total_amount = request.session['totalAmount']
+            userid = request.session['userid']
+            cart_count = count_cart_products(request)
+            order_id = OrderTable.objects.order_by('orderId').last()
+            if order_id is None:
+                order_id = 1
+            else:
+                order_id = order_id.orderId + 1
+            products = CartTable.objects.filter(user_id=userid)
+            for product in products:
+                product_id = ProductsDetails.objects.get(id=product.product_id.id)
+                quantity = product.quantity
+                price = product.product_id.product_selling_price
+                subtotal = int(price) * int(quantity)
+                order = OrderTable.objects.create(orderId=order_id, user=userid, product=product_id, quantity=quantity,
+                                                  price=price, subtotal=subtotal)
+                order.save()
+            return render(request, 'store_Checkout.html', {'cart_count': cart_count, 'total': total_amount})
 
 
 """LOGIN REDIRECT TO SAME PAGE"""

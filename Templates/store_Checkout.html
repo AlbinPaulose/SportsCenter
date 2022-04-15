@@ -1,0 +1,84 @@
+{% extends "store_homepage.html" %}
+{% load static %}
+{% block topIcons %}
+<div id="templatemo_header">
+    <div id="site_title"><h3>Hii, <b><i>{{user.first_name}}</i></b></h3></div>
+    <div id="header_right">
+        <p></p>
+        <p>
+            Shopping Cart: <strong>{{cart_count}} items</strong> ( <a href="{% url 'show_cart' %}">Show Cart</a> )
+        </p>
+    </div>
+    <div class="cleaner"></div>
+</div>
+{% endblock topIcons %}
+{% block heading %}
+    	<div id="top_nav" class="ddsmoothmenu">
+            <ul>
+                    <li><a href="{% url 'store_homepage' %}">Back to Home Page</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of ddsmoothmenu -->
+{% endblock heading %}
+{% block category %}
+{% endblock category %}
+{% block bestsellers %}
+{% endblock bestsellers %}
+{% block content %}
+<script type="text/javascript" src="{% static 'sports_store/js/custom.js' %}"></script>
+        <div id="content" class="float_r">
+        	<h2>Checkout</h2>
+            <h5><strong>BILLING INFORMATION</strong></h5>
+            <div class="content_half float_l checkout">
+				Full Name (must be same as on your credit card):  
+                  <input type="text"  style="width:300px;"  />
+                <br />
+                <br />
+              Address:
+				<input type="text"  style="width:300px;"  />
+                <br />
+                <br />
+              City:
+                <input type="text"  style="width:300px;"  />
+                <br />
+                <br />
+                Country:
+                <input type="text"  style="width:300px;"  />
+            </div>
+            
+            <div class="content_half float_r checkout">
+            	E-MAIL
+				<input type="text"  style="width:300px;"  />
+                <br />
+                <br />
+          PHONE<br />
+				<span style="font-size:10px">Please, specify your reachable phone number. YOU MAY BE GIVEN A CALL TO VERIFY AND COMPLETE THE ORDER.</span>
+                <input type="text"  style="width:300px;"  />
+            </div>
+            
+            <div class="cleaner h50"></div>
+            <h4>TOTAL AMOUNT: <strong>Rs. {{total}}</strong></h4>
+            <input type="submit" class="payment_btn"  name="submit" id="submit" value="Place Order" />
+			<p><input type="checkbox" required />
+			I accept the <a href="#">terms of use</a> of this website.</p>
+        </div> 
+        <div class="cleaner"></div>
+        <style type="text/css">
+            .payment_btn{
+                background: #008CBA;;
+                color:white;
+                padding: 10px 38px;
+                float: right;
+            }
+            .payment_btn:hover {
+                background-color: #000;
+                color: #ffffff;
+            }
+        </style>
+{% endblock content%}
+<!-- <td><a href="#" class="more">2CHECKOUT</a></td> -->
+    </div> 
+</div> 
+
+</body>
+</html>

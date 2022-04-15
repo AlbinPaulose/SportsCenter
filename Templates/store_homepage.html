@@ -51,19 +51,19 @@ ddsmoothmenu.init({
 
 <div id="templatemo_body_wrapper">
 <div id="templatemo_wrapper">
-
+    {% block topIcons %}
 	<div id="templatemo_header">
     	<div id="site_title"><h3>Hii, <b><i>{{user.first_name}}</i></b></h3></div>
         <div id="header_right">
         	<p>
-	        <a href="{% url 'main_homepage' %}">Home Page</a> | <a href="{% url 'show_wishlist' %}">My Wishlist</a> | <a href="{% url 'show_cart' %}">My Cart</a> | <a href="#">Checkout</a> | <a href="{% url 'logout' %}">Log Out</a></p>
+	        <a href="{% url 'main_homepage' %}">Home Page</a> | <a href="{% url 'show_wishlist' %}">My Wishlist</a> | <a href="{% url 'show_cart' %}">My Cart</a> | <a href="#">My Orders</a> | <a href="{% url 'logout' %}">Log Out</a></p>
             <p>
             	Shopping Cart: <strong>{{cart_count}} items</strong> ( <a href="{% url 'show_cart' %}">Show Cart</a> )
 			</p>
 		</div>
         <div class="cleaner"></div>
     </div> <!-- END of templatemo_header -->
-    
+    {% endblock topIcons %}
     <div id="templatemo_menubar">
         {% block heading %}
     	<div id="top_nav" class="ddsmoothmenu">
