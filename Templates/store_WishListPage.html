@@ -1,0 +1,129 @@
+{% extends "store_homepage.html" %}
+{% load static %}
+{% block heading %}
+    	<div id="top_nav" class="ddsmoothmenu">
+            <ul>
+                    <li><a href="{% url 'store_homepage' %}">Home</a></li>
+                    <li><a href="{% url 'products_all' %}">Products</a>
+                    <ul>
+                        {% for subcategory in subcategories %}
+                            <li><a href="{% url 'subcategory_productsAll' subcategory %}">{{subcategory}}</a></li>
+                        {% endfor %}
+                  </ul>
+                </li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="{% url 'logout' %}">Log Out</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of ddsmoothmenu -->
+{% endblock heading %}
+{% block category %}
+{% endblock category %}
+<link href="{% static 'sports_store/css/wishlist.css' %}" rel="stylesheet" type="text/css" />
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="{% static 'sports_store/js/custom.js' %}"></script>
+<script type="text/javascript">
+
+ddsmoothmenu.init({
+	mainmenuid: "top_nav", //menu DIV id
+	orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+	classname: 'ddsmoothmenu', //class added to menu's outer DIV
+	//customtheme: ["#1c5a80", "#18374a"],
+	contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+})
+
+</script>
+{% block content %}
+<link href="{% static 'sports_store/css/wishlist.css' %}" rel="stylesheet" type="text/css">
+<div id="content" class="float_r">
+	<div class="cart-wrap">	
+		<div class="row"> 
+			<div class="container">
+				<div class="main-heading mb-10">My wishlist</div>
+			        <div class="table-wishlist">
+				        <table cellpadding="0" cellspacing="0" style="border: 0ch;" width="100%">
+				        	<thead>
+					        	<tr>
+					        		<th width="40%">Product Name</th>
+					        		<th width="10%">Unit Price</th>
+					        		<th width="15%">Stock Status</th>
+					        		<th width="15%"></th>
+					        		<th width="10%"></th>
+					        	</tr>
+					        </thead>
+					        <tbody>
+								{% for product in products %}
+									<tr>
+										<td width="40%">
+											<div class="display-flex align-center">
+												<div class="img-product">
+													<a href="{% url 'productDetails' product.product_id.id %}"><img src="{{product.product_id.product_image.url}}" width="50px" height="50px" alt="" class="mCS_img_loaded"></a>
+												</div>
+												<div class="name-product">
+													{{product.product_id.product_details}}<br>
+													{% if product.product_id.product_size %}
+														<span style="color: #00BFFF;"><b>size : </b></span>{{product.product_id.product_size}}
+													{% endif %}		
+												</div>
+											</div>
+										</td>
+										<td class="price">Rs.{{product.product_id.product_selling_price}}</td>
+										<td>
+											{% if product.product_id.product_stock < 3 %}
+												<span class="in-stock-box" style="color: #ffffff;background: red;">only {{product.product_id.product_stock}} left</span>
+											{% elif product.product_id.product_stock == 0 %}
+												<span class="in-stock-box" style="color: #ffffff;background: red;" >Out of Stock </span>
+											{% else %}
+												<span class="in-stock-box"> In Stock</span> 
+											{% endif %}
+										</td>
+										<input type="hidden" value="{{product.product_id.id}}" name="productId">
+										<!-- <td><button class="round-black-btn small-btn"><a class="kopp">Add to Cart</a></button></td> -->
+										<td><a class="round-black-btn small-btn">Add to Cart</a></td>
+										<td class="text-center"><a href="kooper" style="color: #212529;font-size: 20px;"><i class="far fa-trash-alt"></i></a></td>									
+									</tr>
+								{% endfor %}
+				        	</tbody>
+				        </table>
+				    </div>
+				</div>
+			</div>
+	</div>
+</div>
+<script>
+	$('.cart-wrap .container .table-wishlist .small-btn').click(function (e){
+		console.log('wishlist js');
+		var pid = $(this).closest('tr').find('input[name=productId]').val();
+    	var token = $('input[name=csrfmiddlewaretoken]').val();
+    	console.log(pid);
+		$.ajax({
+        method: "POST",
+        url: "{% url 'add-ToCart' %}",
+        data: {
+            'product_id':pid,
+            csrfmiddlewaretoken: token
+        },
+        success: function (response) {
+            let addToCartResult= response
+            if(typeof(response)=='string')
+            {
+                addToCartResult= JSON.parse(response)
+            }
+            alertify.success(addToCartResult.status)
+
+        }
+
+    });
+
+	});		
+</script>					
+
+{% endblock content %}
+<script type="text/javascript" src="{% static 'sports_store/js/custom.js' %}"></script>
+</body>
+</html>	
+
+	

@@ -1,0 +1,208 @@
+{% extends "store_homepage.html" %}
+{% load static %}
+{% block heading %}
+    	<div id="top_nav" class="ddsmoothmenu">
+            <ul>
+                    <li><a href="{% url 'store_homepage' %}">Home</a></li>
+                    <li><a href="{% url 'products_all' %}">Products</a>
+                    <ul>
+                        {% for subcategory in subcategories %}
+                            <li><a href="{% url 'subcategory_productsAll' subcategory %}">{{subcategory}}</a></li>
+                        {% endfor %}
+                  </ul>
+                </li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="{% url 'logout' %}">Log Out</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of ddsmoothmenu -->
+{% endblock heading %}
+{% block content %}
+<link href="{% static 'sports_store/css/wishlist-icon.css' %}" rel="stylesheet" type="text/css">
+        <div id="content" class="float_r">
+        	<h1>Product Detail</h1>
+            <div class="content_half float_l">
+        	<a  rel="lightbox[portfolio]" href="{{product.product_image.url}}"><img src="{{product.product_image.url}}" alt="image" /></a>
+            </div>
+            <div class="stage">
+                {% if wishlist == False %}
+                    <div class="heart"></div>
+                {% else %}    
+                    <div class="heart is-active"></div>
+                {% endif %}    
+            </div>
+                <div class="content_half float_r">
+                    <table style="font-size: larger;">
+                        <tr>
+                            <td width="160">Price</td>
+                            <td><mark style="font-size: large;background-color: yellow;color: #000;"><b>:&#8377;{{product.product_selling_price}}</b></mark></td>
+                        </tr>
+                        <tr>
+                            <td>Availability</td>
+                            <form>
+                                {% if product.product_size %}
+                                        <td id="stock"></td>
+                                {% else %}
+                                    {% if product.product_stock < 3 %}
+                                        <td style="color: red;">:only {{product.product_stock}} left</td>
+                                    {% elif product.product_stock == 0 %}
+                                        <td style="color: red;">: Out of Stock </td>
+                                    {% else %}
+                                        <td>: In Stock</td> 
+                                    {% endif %}
+                                {% endif %}
+                            </form>                   
+                        </tr>
+                        <tr>
+                            <td>Brand</td>
+                            <td>:{{product.product_brand}}</td>
+                        </tr>
+                        <tr>
+                            {% if product.product_color %}
+                                <td>Color</td>
+                                <td>:{{product.product_color}}</td>
+                            {% endif %}    
+                        </tr>
+                        <tr>
+                            <td>Gender</td>
+                            <td>:{{product.product_gender_for}}</td>
+                        </tr>
+                        <tr>
+                            {% if product.product_size %}
+                                <td>Choose your size</td>
+                                <form action="productsdetail" method="post" class="sizeDetails" id="details" data-cart-url="{% url 'ajax_add_ToCart' %}" data-size-url="{% url 'ajax_check_stock' product.product_name  product.subcategory  product.childcategory  product.product_gender_for  product.product_brand  product.product_color   %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{product.id}}" class="productId">    
+                                    <td>:<select id="sizeslot" name="size_preference" required>
+                                        <option value="1">Avaliable Size</option>
+                                        {% for size in size_list %}
+                                            <option value="{{size}}">{{size}}</option>
+                                        {% endfor %} 
+                                    </select></td>
+                                </form>
+                                <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>    
+                            {% endif %}    
+                        </tr>
+                        <!-- <tr>
+                            <td>Quantity</td>
+                            <td><input type="text" value="1" style="width: 20px; text-align: right" /></td>
+                        </tr> -->
+                    </table>
+                    
+                    <div class="cleaner h20">
+                    </div>
+                    
+                    <form id="cartDetails" data-cart-url="{% url 'ajax_add_ToCart' %}">
+                        {% csrf_token %}
+                            <script>console.log('hi')</script>
+                            <input type="hidden" id="newProductId" class="newProductId">
+                            <a href="#" class="cartbtn" id="newcartbtn" style="font-size:larger;" ></a>
+                    </form>    
+                    {% if product.product_size %}
+                        <script>
+                            document.getElementById("newcartbtn").style.display = "none";
+                        </script>
+                    {% else %}
+                        <form id="details" data-cart-url="{% url 'ajax_add_ToCart' %}">
+                            {% csrf_token %}
+                                <input type="hidden" value="{{product.id}}" class="productId">
+                                <a href="#" class="addtocart" id="cartbutton" style="font-size:larger;"></a>
+                                
+                        </form>
+                        <script>document.getElementById("newcartbtn").style.display = "none";</script>
+                    {% endif %}
+
+                    <script>
+                        $("#sizeslot").change(function () {
+                        const url = $("#details").attr("data-size-url");
+                            const sizeValue = $(this).val();
+                            $.ajax({                       // initialize an AJAX request
+                            url: url,                    // set the url of the request (= ajax/load_available_timeSlot/ )
+                            data: {
+                                'size_value': sizeValue       // add the country id to the GET parameters
+                            },
+                                success: function (stock) {   // `data` is the return of the `load_price` view function
+                                    console.log(stock);
+                                    console.log('stock',stock[0]);
+                                    console.log('product id',stock[1]);
+                                    let stockAvailability;
+                                    let productId;
+                                    $('#stock').val(stock[0]);
+                                    if (stock[0] == null){
+                                        stockAvailability = "<span style='color:red'> out of stock </span>";
+                                    }
+                                    else if (stock[0] < 3){
+                                        stockAvailability = "<span style='color:red'> only " + stock[0] + " left </span>";  
+                                    }
+                                    else if (stock[0] == 0){
+                                        stockAvailability = "<span style='color:red'> out of stock </span>";
+                                        
+                                    }
+                                    else{
+                                        stockAvailability ="In Stock"
+                                    }
+                                    productId = stock[1]
+                                    console.log(productId);
+                                    document.getElementById("stock").innerHTML = stockAvailability;
+                                    var pid =    document.getElementById("newProductId");
+                                    pid.setAttribute('value',productId);
+                                    document.getElementById("newcartbtn").style.display = "block";
+                                }
+                            });
+                        });
+
+                    </script>
+                    <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+                    <script>
+                        $(function() {
+                            $(".heart").on("click", function() {
+                                $(this).toggleClass("is-active");
+                                var productid = $('.productId').val();
+                                var token = $('input[name=csrfmiddlewaretoken]').val();
+                                url ='../add-remove-wishlist',
+                                console.log('wishlist');
+                                console.log(productid);
+                                $.ajax({
+                                    method: "POST",
+                                    url: "{% url 'add-remove-wishlist' %}",
+                                    data: {
+                                        'product_id':productid,
+                                        csrfmiddlewaretoken: token
+                                    },
+                                    success: function (response) {
+                                        console.log('wishlist successed');
+                                    }    
+                                });    
+                            });
+                        });
+                    </script>
+                </div>
+            <div class="cleaner h30"></div>
+            
+            <h5>Product Description</h5>
+            <p>{{product.product_details}}</p>	
+            
+          <div class="cleaner h50"></div>
+            
+            <h3>Related Products</h3>
+        	{% for relProduct in relatedProducts %}
+                <div class="product_box">
+                    <form method="post" id="details" data-cart-url="{% url 'ajax_add_ToCart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{product.id}}" class="productId">
+                        <a href="{% url 'productDetails' relProduct.id %}"><img src="{{relProduct.product_image.url}}" alt="{{relProduct.product_name}}" /></a>
+                        <h5>{{relProduct.product_name}}</h5>     
+                        <p class="product_price"><del  style="color:black;font-size: small;">Rs. {{relProduct.product_actual_price}}</del></p><p><mark style="font-size: large;background-color: yellow;color: #000;"><b><i>&#8377; {{relProduct.product_selling_price}}</i></b></mark></p>
+                        <!-- <p><a href="#" class="addtocart" id="cartBtn" style="font-size:larger;"></a> -->
+                        <a href="{% url 'productDetails' relProduct.id %}" class="detail"></a></p>
+                    </form>     
+                </div>
+            {% endfor %}            	             	     
+        </div> 
+        <div class="cleaner"></div>   
+    </div> <!-- END of templatemo_main -->   
+    
+{% endblock content %}
+<script type="text/javascript" src="{% static 'sports_store/js/custom.js' %}"></script>
+</body>   
+</html>

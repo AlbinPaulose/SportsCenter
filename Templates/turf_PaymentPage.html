@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+      display: flex;
+      justify-content: center;
+      height: 100%;
+      }
+      body { 
+      padding: 0;
+      margin: 0;
+      outline: none;
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 16px;
+      color: #666;
+      }
+      .btn-block {
+      margin-top: 10px;
+      text-align: center;
+      }
+      button {
+      width: 100%;
+      padding: 10px 0;
+      margin: 10px auto;
+      border-radius: 5px; 
+      border: none;
+      background: #1c87c9; 
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      }
+      button:hover {
+      background: #26a9e0;
+      }
+    </style>        
+</head>
+<body>
+    <div class="main-block">
+        <h1>Payment</h1>
+        <form action="/">
+          <div class="btn-block">
+                <button  id="rzp-button1" type="submit">Proceed to Pay</button>
+          </div>
+        </form>
+      </div>  
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "{{api_key}}", // Enter the Key ID generated from the Dashboard
+    "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "name": "Sports Center",
+    "description": "Test Transaction",
+    //"order_id": "{{order_id}}", This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature)
+    },
+    "prefill": {
+        "name": "Toby Varghese",
+        "email": "toby.varghese@example.com",
+        "contact": "9567803335"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert('Your Slot is booked');
+        window.location =  "{% url 'turf_homepage' %}";
+        
+    });
+var rzp2 = new Razorpay(options);
+rzp2.on('payment.error', function (response){
+        alert('Your Slot is booked');
+        
+    });
+
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+</body>
+</html>

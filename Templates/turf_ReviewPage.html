@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="{% static 'turf_booking/css/review-page.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<script src="https://use.fontawesome.com/a6f0361695.js"></script>
+
+<h2 id="fh2">WE APPRECIATE YOUR REVIEW!</h2>
+<h6 id="fh6">Your review will help us to improve our services.</h6>
+
+<form id="feedback" action="turf_review" method="post">
+  {% csrf_token %}
+  <div class="pinfo">Your personal info</div>
+
+  <div class="form-group">
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input name="name" value="{{user.first_name}}" class="form-control" type="text">
+      </div>
+    </div>
+  </div>
+
+  <div class="pinfo">Choose Turf</div>
+
+  <div class="form-group">
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-soccer-ball-o"></i></span>
+        <select class="form-control" id="rate" name="turf_name">
+          <option value="">Select any turf</option>
+          {% for turf in turf_name %}
+            <option value="{{turf}}">{{turf}}</option>
+          {% endfor %}  
+        </select>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="pinfo">Rate our overall services.</div>
+
+  <div class="form-group">
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-heart"></i></span>
+        <select class="form-control" id="rate" name="rating">
+          <option value="1star">1</option>
+          <option value="2stars">2</option>
+          <option value="3stars">3</option>
+          <option value="4stars">4</option>
+          <option value="5stars">5</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="pinfo">Write your feedback.</div>
+
+  <div class="form-group">
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+        <textarea class="form-control" id="review" rows="3" name="feedback"></textarea>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="pinfo">Upload your image</div>
+
+  <div class="form-group">
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-upload"></i></span>
+        <input type="file"  class="form-control" name="review_image" >
+      </div>
+    </div>
+  </div>
+
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+<h1 style="text-align: center;">Reviews</h1>
+{% for review in reviews %}
+<div><h2><b style="color: chocolate;">{{review.user.first_name}}</b></h2></div>
+<div class="box">
+  <div class="content">
+    <div class="info">
+      <div style="font-size:large;"><span style="color: #17a2b8;">Turf: </span><b> {{review.turf_name.turf_name}}</b></div><br>
+      <div style="font-size:large;">{{review.feedback}}</div>
+      <div>
+        {% if review.rating == '5stars' %}
+          <span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star checked"></span>
+        {% elif review.rating == '4stars' %}
+          <span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star"></span>
+        {% elif review.rating == '3stars' %}
+          <span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>  
+        {% elif review.rating == '2stars' %}
+          <span class="fa fa-star checked"></span><span class="fa fa-star checked"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>
+        {% elif review.rating == '1stars' %}
+          <span class="fa fa-star checked"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>
+        {% endif %} 
+      </div> 
+    </div>
+    <div class="image">{{review_photo}}</div>
+  </div>
+</div>
+{% endfor %}
+
+
+<style type="text/css">
+  .checked {
+    color: orange;
+  }
+
+  .rplg-reviews {
+  display: flex;
+  flex-flow: column wrap;
+  align-content: space-between;
+  /* Your container needs a fixed height, and it
+   * needs to be taller than your tallest column. */
+  height: 5000px;
+}
+
+.rplg-review {
+  width: 32%;
+  margin-bottom: 2%;
+}
+
+.rplg-review:nth-child(3n+1) { order: 1; }
+.rplg-review:nth-child(3n+2) { order: 2; }
+.rplg-review:nth-child(3n) { order: 3; }
+
+.rplg-reviews::before,
+.rplg-reviews::after {
+  content: "";
+  flex-basis: 100%;
+  width: 0;
+  order: 2;
+}
+
+.box {
+  background: #fff;
+  margin: 10px !important;
+  padding: 20px !important;
+  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.box .content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+
+.box .info .name {
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.box .info .job {
+  font-size: 16px;
+  font-weight: 500;
+  color: #17a2b8;
+}
+
+.content .image img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+</style>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'turf_booking/css/booking-page.css' %}">
+</head>
+<body class="background" background="{% static 'turf_booking/images/cricket02.jpg' %}">
+<div>
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+    <div class="alert alert-primary" role="alert">
+        <p><h6 style="color:red"><b>{{ message }}</b></h6></p>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</div>
+<h1 style="text-align: center;color: #e0ad20 ;"><u>Cricket Turf Booking</u></h1>
+<form action="book_cricket_turf" method="post" id="book_cricket" data-date-url="ajax-load_available_cricketTimeSlot"
+      data-price-url="ajax-cricket_price">
+    {% csrf_token %}
+    <div class="elem-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="visitor_name" value="{{userDetails.first_name}}" pattern=[A-Z\sa-z]{3,20}
+               required readonly>
+    </div>
+    <div class="elem-group">
+        <label for="email">Your E-mail</label>
+        <input type="email" id="email" name="visitor_email" value="{{userDetails.email}}"
+               placeholder="john.doe@gmail.com" required readonly>
+    </div>
+    <div class="elem-group">
+        <label for="phone">Your Phone</label>
+        <input type="tel" id="phone" name="visitor_phone" pattern=(\d{3})-?\s?(\d{3})-?\s?(\d{4}) required>
+    </div>
+    <div class="elem-group inlined">
+        <label for="adult">Hours Needed</label>
+        <input type="number" id="adult" name="total_hours" min="2" max="2" placeholder="2" value="2" required>
+    </div>
+    <div class="elem-group inlined">
+        <label for="checkin-date">Date</label>
+        <input type="date" id="checkin-date" class="checkin-date" onchange="cricketDateFunction()" name="book_date" required>
+    </div>
+    <div class="elem-group">
+        <label for="timeslot">Select Hour Preference</label>
+        <select id="timeslot" name="hour_preference" onchange="cricketTimeFunction()" required>
+            <option value="">Select the above Date Field to view time slots</option>
+        </select>
+    </div>
+    <div class="elem-group">
+        <label>Amount</label>
+
+        <input type="text" id="price" name="total_amount" readonly required>
+
+    </div>
+    <hr>
+    <div class="elem-group">
+        <label for="message">Anything Else?</label>
+        <textarea id="message" name="message" placeholder="Tell us anything else that might be important."></textarea>
+    </div>
+    <button type="submit">Book the Time Slot</button>
+
+</form>
+
+</body>
+<style>
+  .background {
+     background-color: #ffffff10;
+     backdrop-filter: blur(12px);
+     -webkit-backdrop-filter: blur(12px);
+     background-repeat: no-repeat;
+     background-size: cover;
+
+}
+
+</style>
+<script src="{% static 'turf_booking/js/booking-page.js' %}"></script>
+<script src="{% static 'sports_store/js/custom.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<!-- <script>
+    function cricketDateFunction(){
+        console.log('cricket in internal');
+    }
+</script> -->
+{% if booked %}
+<script>
+    alert('Booked Successfully');
+    window.location =  "{% url 'turf_homepage' %}";
+
+</script>
+{% endif %}
+</html>

@@ -1,0 +1,130 @@
+{% extends "store_index.html" %}
+{% load static %}
+{% block heading %}
+    	<div id="top_nav" class="ddsmoothmenu">
+            <ul>
+                    <li><a href="{% url 'store_index' %}">Home</a></li>
+                    <li><a href="{% url 'products' %}" class="selected" >Products</a>        
+                    <ul>
+                        {% for subcategory in subcategories %}
+                            <li><a href="{% url 'subcategory_products' subcategory %}">{{subcategory}}</a></li>
+                        {% endfor %}
+                  </ul>
+                </li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="#">Log In</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of ddsmoothmenu -->
+{% endblock heading %}
+{% block bestsellers %}
+<div class="sidebar_box"><span class="bottom"></span>
+    <h3>Categories</h3>   
+    <div class="content"> 
+        <ul class="sidebar_list">
+            <li class="first"><a href="{% url 'products' %}">All Sports</a></li>
+            {% for category in categories %}
+                <li class="last"><a href="{% url 'filter_products' category.id %}">{{category.childcategory}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock bestsellers %}
+{% block content %}
+        
+    
+    <div id="templatemo_main">
+        <div id="content" class="float_r">
+        	<h1> Products</h1>
+            {% for product in products %}
+                <div class="product_box">
+                    <h3 style="height: 30px;width:100%; background:#11bdd1; transform: skew(20deg);"><b style="color: white;font-size: 13px;text-transform: capitalize;"><i>{{product.product_name}}</i></b></h3>
+                    <a href="{% url 'product_details' product.id %}"><img src="{{product.product_image.url}}" alt="{{product.product_name}}" /></a>
+
+                    {% if product.product_details|length > 40 %}
+                        <p> {{product.product_name}} {{product.product_color}}</p>
+                    {% else %} 
+                        <p> {{product.product_details}}</p>  
+                    {% endif %}     
+                    <p class="product_price"><del  style="color:black;font-size: small;">Rs. {{product.product_actual_price}}</del></p><p><mark style="font-size: large;background-color: yellow;color: #000;"><b><i>&#8377; {{product.product_selling_price}}</i></b></mark></p>
+                    <p><a href="shoppingcart.html" class="addtocart"></a>
+                    <a href="productdetail.html" class="detail"></a></p>
+                </div>
+            {% endfor %}            	
+            <!-- <div class="product_box">
+            	<h3>Curabitur et turpis</h3>
+            	<a href="productdetail.html"><img src="images/product/02.jpg" alt="Shoes 2" /></a>
+                <p>Etiam et sapien ut nunc blandit euismod. Sed dui libero, semper a volutpat sed, placerat eu lectus.</p>
+            <p class="product_price">$ 80</p>
+                <a href="shoppingcart.html" class="addtocart"></a>
+                <a href="productdetail.html" class="detail"></a>
+            </div>        	
+            <div class="product_box no_margin_right">
+            	<h3>Mauris consectetur</h3>
+            	<a href="productdetail.html"><img src="images/product/03.jpg" alt="Shoes 3" /></a>
+                <p>Curabitur pellentesque ullamcorper massa ac ultricies. Maecenas porttitor erat quis leo pellentesque.</p>
+              <p class="product_price">$ 60</p>
+                <a href="shoppingcart.html" class="addtocart"></a>
+                <a href="productdetail.html" class="detail"></a>
+            </div>      -->
+            
+            <!-- <div class="cleaner"></div>
+               	
+            <div class="product_box">
+            	<h3>Proin volutpat</h3>
+            	<a href="productdetail.html"><img src="images/product/04.jpg" alt="Shoes 4" /></a>
+                <p>Morbi non risus vitae est vestibulum tincidunt ac eget metus. Sed congue, erat id congue vehicula.</p>
+              <p class="product_price">$ 260</p>
+                <a href="shoppingcart.html" class="addtocart"></a>
+                <a href="productdetail.html" class="detail"></a>
+            </div>        	
+            <div class="product_box">
+	            <h3>Aenean tempus</h3>
+            	<a href="productdetail.html"><img src="images/product/05.jpg" alt="Shoes 5" /></a>
+                <p>Aenean eu elit arcu. Quisque eget blandit erat. Integer molestie malesuada augue vitae mollis.</p>
+            <p class="product_price">$ 80</p>
+                <a href="shoppingcart.html" class="addtocart"></a>
+                <a href="productdetail.html" class="detail"></a>
+            </div>        	
+            <div class="product_box no_margin_right">
+            	<h3>Nulla luctus urna</h3>
+            	<a href="productdetail.html"><img src="images/product/06.jpg" alt="Shoes 6" /></a>
+                <p>Nunc nisl nisi, aliquet eu gravida vitae, porta vel ante. Pellentesque faucibus risus et sem volutpat.</p>
+              <p class="product_price">$ 190</p>
+                <a href="shoppingcart.html" class="addtocart"></a>
+                <a href="productdetail.html" class="detail"></a>
+            </div>   
+            
+            <div class="cleaner"></div>
+                 	
+            <div class="product_box">
+            	<h3>Pellentesque egestas</h3>
+            	<a href="productdetail.html"><img src="images/product/07.jpg" alt="Shoes 7" /></a>
+				<p>Aenean eu elit arcu. Quisque eget blandit erat. Integer molestie malesuada augue vitae mollis.</p>
+              <p class="product_price">$ 30</p>
+                <a href="shoppingcart.html" class="addtocart"></a>
+                <a href="productdetail.html" class="detail"></a>
+            </div>        	
+            <div class="product_box">
+            	<h3>Suspendisse porttitor</h3>
+            	<a href="productdetail.html"><img src="images/product/08.jpg" alt="Shoes 8" /></a>
+                <p>Nulla rutrum neque vitae erat condimentum eget malesuada neque molestie. Nunc a leo tellus.</p>
+            <p class="product_price">$ 220</p>
+                <a href="shoppingcart.html" class="addtocart"></a>
+                <a href="productdetail.html" class="detail"></a>
+            </div>        	
+            <div class="product_box no_margin_right">
+            	 <h3>Nam vehicula</h3>
+            	<a href="productdetail.html"><img src="images/product/09.jpg" alt="Shoes 9" /></a>
+               	<p>Vivamus accumsan luctus interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <p class="product_price">$ 65</p>
+                <a href="shoppingcart.html" class="addtocart"></a>
+                <a href="productdetail.html" class="detail"></a>
+            </div> --> 
+        </div> 
+        <div class="cleaner"></div> 
+
+    </div>     
+{% endblock content %}
+</body>
+</html>

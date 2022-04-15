@@ -1,0 +1,119 @@
+{% extends "store_homepage.html" %}
+{% load static %}
+{% block heading %}
+    	<div id="top_nav" class="ddsmoothmenu">
+            <ul>
+                    <li><a href="{% url 'store_homepage' %}">Home</a></li>
+                    <li><a href="{% url 'products_all' %}">Products</a>
+                    <ul>
+                        {% for subcategory in subcategories %}
+                            <li><a href="{% url 'subcategory_productsAll' subcategory %}">{{subcategory}}</a></li>
+                        {% endfor %}
+                  </ul>
+                </li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="{% url 'logout' %}">Log Out</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of ddsmoothmenu -->
+{% endblock heading %}
+{% block category %}
+{% endblock category %}
+<script type="text/javascript" src="{% static 'sports_store/js/custom.js' %}"></script>
+<script type="text/javascript">
+
+ddsmoothmenu.init({
+	mainmenuid: "top_nav", //menu DIV id
+	orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+	classname: 'ddsmoothmenu', //class added to menu's outer DIV
+	//customtheme: ["#1c5a80", "#18374a"],
+	contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+})
+
+</script>
+{% block content %}
+        <div id="content" class="float_r">
+        	<h1>Shopping Cart</h1>
+        	<table width="680px" cellspacing="0" cellpadding="5" class="cartTable">
+                   	  <tr bgcolor="#ddd">
+                            <th></th>
+                        	<th width="220" align="left">Image </th> 
+                        	<th width="180" align="left">Description </th> 
+                       	  	<th width="100" align="center">Quantity </th> 
+                        	<th width="60" align="right">Price </th> 
+                        	<th width="60" align="right">Total </th> 
+                        	<th width="90"> </th>
+                            
+                      </tr>
+                      {% if messages %}
+                        {% for message in messages %}
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                                <div class="alert alert-primary" role="alert">
+                                <p><h5 style="color:#20B2AA;"><b>{{ message }}</b></h5></p>
+                                </div>
+                            {% endif %}
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                                <script>
+                                    alert(message);
+                                </script>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                        
+                    {% for product in products %}
+                    	<tr class="cartRow">
+                            <form class="cartDetails" method="post">
+                                {% csrf_token %}
+                                <td><input type="hidden" class="productId" name="productId" value="{{product.product_id.id}}"></td>
+                                <td><a href="{% url 'productDetails' product.product_id.id %}"><img src="{{product.product_id.product_image.url}}" alt="image 1" /></a></td> 
+                                <td>{{product.product_id.product_details}}<br>
+                                    {% if product.product_id.product_size %} 
+                                        <span>Size: </span>{{product.product_id.product_size}} 
+                                    {% endif %}      
+                                </td> 
+                                <td align="center"><input type="number" class="qty" name="quantity" min="1" max="10" value="{{product.quantity}}" style="width: 40px;height: 20px; text-align: center" /></td>
+                                <td align="right">{{product.product_id.product_selling_price}}</td> 
+                                <td align="right">
+                                    {{product.total_price}}
+                                </td>
+                                <td align="center"> <a href="{% url 'remove_product' product.product_id.id  product.id %}"><img src="{% static 'sports_store/images/remove_x.gif' %}" alt="remove" /><br />Remove</a> </td>
+                            </form>
+						</tr>
+                        
+                    {% endfor %}
+                            <tr>
+                                <td colspan="3" align="right"  height="30px">Have you modified your basket? Please click here to <a href="../store/show_cart"><strong>Update</strong></a>&nbsp;&nbsp;</td>
+                                <td align="right" style="background:#ddd; font-weight:bold">Total:</td>
+                                <td align="right" style="background:#ddd; font-weight:bold">Rs.{{total}}</td>
+                                <td style="background:#ddd; font-weight:bold"> </td>
+                            </tr>
+                            
+                            
+                        </table>
+                        
+                        
+                        <div style="float:right; width: 215px; margin-top: 20px;">
+                        {% if messages %}
+                                {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                                    <p><a href="#">Proceed to checkout</a></p>
+                                {% endif %}
+                        {% else %}        
+                            <p><a href="checkout.html">Proceed to checkout</a></p>
+                        {% endif %}    
+                        <p><a href="store_homepage">Continue shopping</a></p>
+                        <!-- <p><a href="javascript:history.back()">Continue shopping</a></p> -->
+                            
+                        </div>   
+                    
+                    
+			</div>
+        <div class="cleaner"></div>    
+                    
+    </div> <!-- END of templatemo_main -->
+    
+    
+{% endblock content %}
+
+</body>
+</html>

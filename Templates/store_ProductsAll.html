@@ -1,0 +1,68 @@
+{% extends "store_homepage.html" %}
+{% load static %}
+<html>
+<head><title>View All Products</title></head>
+<body>
+{% block heading %}
+    	<div id="top_nav" class="ddsmoothmenu">
+            <ul>
+                    <li><a href="{% url 'store_homepage' %}">Home</a></li>
+                    <li><a href="{% url 'products_all' %}" class="selected" >Products</a>        
+                    <ul>
+                        {% for subcategory in subcategories %}
+                            <li><a href="{% url 'subcategory_productsAll' subcategory %}">{{subcategory}}</a></li>
+                        {% endfor %}
+                  </ul>
+                </li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="{% url 'logout' %}">Log Out</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of ddsmoothmenu -->
+{% endblock heading %}
+{% block bestsellers %}
+<div class="sidebar_box"><span class="bottom"></span>
+    <h3>Categories</h3>   
+    <div class="content"> 
+        <ul class="sidebar_list">
+            <li class="first"><a href="{% url 'products_all' %}">All Sports</a></li>
+            {% for category in categories %}
+                <li class="last"><a href="{% url 'filterCategory_productsAll' category.id %}">{{category.childcategory}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock bestsellers %}
+{% block content %}
+<script type="text/javascript" src="{% static 'sports_store/js/custom.js' %}"></script>     
+    
+    <div id="templatemo_main">
+        <div id="content" class="float_r">
+        	<h1> Products</h1>
+            {% for product in products %}
+                <div class="product_box">
+                    <form method="post" id="details" data-cart-url="{% url 'ajax_add_ToCart' %}">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{product.id}}" class="productId">
+                        <h3 style="height: 30px;width:100%; background:#11bdd1; transform: skew(20deg);"><b style="color: white;font-size: 13px;text-transform: capitalize;"><i>{{product.product_name}}</i></b></h3>
+                        <a href="{% url 'productDetails' product.id %}"><img src="{{product.product_image.url}}" alt="{{product.product_name}}" /></a>
+
+                        {% if product.product_details|length > 40 %}
+                            <p> {{product.product_name}} {{product.product_color}}</p>
+                        {% else %} 
+                            <p> {{product.product_details}}</p>  
+                        {% endif %}     
+                        <p class="product_price"><del  style="color:black;font-size: small;">Rs. {{product.product_actual_price}}</del></p><p><mark style="font-size: large;background-color: yellow;color: #000;"><b><i>&#8377; {{product.product_selling_price}}</i></b></mark></p>
+                        <!-- <p><a href="#" class="addtocart" id="cartBtn" style="font-size:larger;"></a> -->
+                        <a href="{% url 'productDetails' product.id %}" class="detail"></a></p>
+                    </form>    
+                </div>
+            {% endfor %}           	 
+        </div> 
+
+    </div>     
+{% endblock content %}
+<script type="text/javascript" src="{% static 'sports_store/js/custom.js' %}"></script>
+<div class="cleaner"></div>  
+</body>
+</html>
