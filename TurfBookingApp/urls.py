@@ -21,5 +21,4 @@ urlpatterns = [
     path('order_history', views.order_history, name="order_history"),
     path('cancel_order/<int:oid>/', views.cancel_order, name="cancel_order"),
     path('turf_review', views.review, name="turf_review"),
-    path('success', views.success, name='success'),
 ]

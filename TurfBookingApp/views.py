@@ -17,7 +17,7 @@ def turf_home_page(request):
         if request.user.is_authenticated:
             user_details = User.objects.get(id=userid)
             reviews = TurfReviewTable.objects.all().order_by('-id')[:5]
-            return render(request, "turf_HomePage.html", {'user': user_details, 'reviews': reviews})
+            return render(request, "turf_HomePage.html", {'user': user_details,'reviews': reviews})
 
 
 """ VIEW FOOTBALL TURF BOOKING PAGE """
@@ -280,10 +280,10 @@ def review(request):
             image = request.POST["review_image"]
             turf = TurfDetails.objects.get(turf_name=turf_name)
             new_review = TurfReviewTable.objects.create(user=user, turf_name=turf, rating=rating, feedback=feedback,
-                                                        image=image)
+                                                       image=image)
             new_review.save()
             return redirect('turf_review')
-        return render(request, 'turf_ReviewPage.html', {'user': user, 'turf_name': turf, 'reviews': reviews})
+        return render(request, 'turf_ReviewPage.html', {'user': user, 'turf_name': turf , 'reviews': reviews})
 
 
 """LOGIN REDIRECT TO SAME PAGE"""

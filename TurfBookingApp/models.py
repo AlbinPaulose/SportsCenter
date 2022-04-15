@@ -71,7 +71,9 @@ class CricketTimeSlotTable(models.Model):
 class TurfReviewTable(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     turf_name = models.ForeignKey(TurfDetails, on_delete=models.CASCADE)
-    rating = models.CharField(max_length=20)
+    rating = models.CharField(max_length=15)
     feedback = models.TextField(blank=True)
     image = models.ImageField(upload_to='review_images')
     reviewed_at = models.DateField(auto_now_add=True)
+
+

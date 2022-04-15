@@ -33,10 +33,10 @@ class CricketTimeSlotTable(admin.ModelAdmin):
 class TurfBookingTable(admin.ModelAdmin):
     list_display = ('turf_name', 'booking_date', 'time_slot')
 
-
-@admin.register(TurfReviewTable)
-class TurfReviewTable(admin.ModelAdmin):
-    ordering = ['id']
+#
+# @admin.register(TurfReviewTable)
+# class TurfReviewTable(admin.ModelAdmin):
+#     ordering = ['id']
 # @admin.register(FootballTimeSlotTable)
 # class FootballTimeSlotTableAdmin(admin.ModelAdmin):
 #     def __init__(self, *args, **kwargs):
