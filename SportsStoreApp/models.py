@@ -35,4 +35,18 @@ class OrderTable(models.Model):
     price = models.IntegerField()
     discount = models.IntegerField(default=0)
     subtotal = models.IntegerField()
-    status = models.CharField(default='not paid', choices=order_status,max_length=100)
+    status = models.CharField(default='not paid', choices=order_status, max_length=100)
+
+
+class FinalOrderTable(models.Model):
+    orderId = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    deliver_date = models.DateField()
+    address = models.TextField()
+    district = models.CharField(max_length=50)
+    city = models.CharField(max_length=30)
+    pincode = models.IntegerField()
+    phone = models.CharField(max_length=10)
+    total_price = models.IntegerField()
+    no_of_products = models.IntegerField()
+    status = models.CharField(max_length=20, choices=order_status, default='payment confirmed')

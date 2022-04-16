@@ -83,7 +83,7 @@ def subcategory_products(request, subcategory):
 
 def product_details(request, product_id):
     wishlist_in = check_wishlist_icon(request, product_id)
-    print(".....wishkist status.....", wishlist_in)
+    print(".....wishlist status.....", wishlist_in)
     category_all = categories.objects.all()
     sub_categories = categories.objects.order_by('-subcategory').values_list('subcategory', flat=True).distinct()
     product = ProductsDetails.objects.get(id=product_id)
@@ -301,16 +301,36 @@ def checkout(request):
                 order_id = 1
             else:
                 order_id = order_id.orderId + 1
+            product_count = 0
             products = CartTable.objects.filter(user_id=userid)
+            user = User.objects.get(id=userid)
             for product in products:
+                product_count += 1
                 product_id = ProductsDetails.objects.get(id=product.product_id.id)
                 quantity = product.quantity
                 price = product.product_id.product_selling_price
                 subtotal = int(price) * int(quantity)
-                order = OrderTable.objects.create(orderId=order_id, user=userid, product=product_id, quantity=quantity,
+                order = OrderTable.objects.create(orderId=order_id, user=user, product=product_id, quantity=quantity,
                                                   price=price, subtotal=subtotal)
                 order.save()
-            return render(request, 'store_Checkout.html', {'cart_count': cart_count, 'total': total_amount})
+            return render(request, 'store_Checkout.html',
+                          {'cart_count': cart_count, 'total': total_amount, 'orderId': order_id,
+                           'productsCount': product_count,'user':user})
+
+
+"""BOOKING THE PRODUCTS AND ADD THE PRODUCTS TO THE FINAL ORDER TABLE"""
+
+
+def booking_products(request):
+    if 'userid' not in request.session:
+        return redirect('login_redirect')
+    else:
+        userid = request.session['userid']
+        if request.user.is_authenticated:
+            if request.method == 'POST':
+                pass
+        else:
+            return redirect('login_redirect')
 
 
 """LOGIN REDIRECT TO SAME PAGE"""
