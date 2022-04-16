@@ -10,6 +10,7 @@ client = razorpay.Client(auth=(RAZORPAY_API_KEY, RAZORPAY_API_SECRET_KEY))
 
 
 def turf_payment(request):
+
     turf_order_id = request.session.get('turfOrder_id')
     turf_order = get_object_or_404(TurfBookingTable, id=turf_order_id)
 
@@ -25,10 +26,10 @@ def turf_payment(request):
         'payment_capture': 0
 
     }
-    # payment_order = client.order.create(data=DATA)
-    # print("----------------------",payment_order)
-    # payment_order_id = payment_order['id']
-    context = {'amount': price, 'order_id': turf_order_id, 'api_key': RAZORPAY_API_KEY}
+    payment_order = client.order.create(data=DATA)
+    print("----------------------",payment_order)
+    payment_order_id = payment_order['id']
+    context = {'amount': price, 'order_id': payment_order_id, 'api_key': RAZORPAY_API_KEY}
     return render(request, 'turf_PaymentPage.html', context)
 
 

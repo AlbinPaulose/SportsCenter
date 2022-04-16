@@ -40,11 +40,11 @@
 <body>
     <div class="main-block">
         <h1>Payment</h1>
-        <form action="/">
+        <form action="turf_payment">
           <div class="btn-block">
                 <button  id="rzp-button1" type="submit">Proceed to Pay</button>
           </div>
-        </form>
+        
       </div>  
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
@@ -88,5 +88,6 @@ document.getElementById('rzp-button1').onclick = function(e){
     e.preventDefault();
 }
 </script>
+</form>
 </body>
 </html>
