@@ -17,7 +17,7 @@ def turf_home_page(request):
         if request.user.is_authenticated:
             user_details = User.objects.get(id=userid)
             reviews = TurfReviewTable.objects.all().order_by('-id')[:5]
-            return render(request, "turf_HomePage.html", {'user': user_details,'reviews': reviews})
+            return render(request, "turf_HomePage.html", {'user': user_details, 'reviews': reviews})
 
 
 """ VIEW FOOTBALL TURF BOOKING PAGE """
@@ -43,7 +43,7 @@ def available_time_slot_football(request):
     date_value = request.GET.get('date_value')
     turf = TurfDetails.objects.get(category='football')
     booked_timeSlot = TurfBookingTable.objects.filter(category='football', turf_name=turf,
-                                                      booking_date=date_value, book_status='pending')
+                                                      booking_date=date_value, book_status='success')
     time_slots = FootballTimeSlotTable.objects.exclude(
         time_slot__in=Subquery(booked_timeSlot.values('time_slot'))) & FootballTimeSlotTable.objects.filter(
         available=True).order_by('id')
@@ -77,7 +77,7 @@ def book_football_turf(request):
         amount = request.POST["total_amount"]
         turf = TurfDetails.objects.get(category='football')
         if TurfBookingTable.objects.filter(booking_date=booking_date, time_slot=timeslot, category='football',
-                                           turf_name=turf).exists():
+                                           turf_name=turf, book_status='success').exists():
             messages.info(request, 'Already Booked')
             return redirect('turf_FootballBooking')
         else:
@@ -114,7 +114,7 @@ def available_time_slot_shuttle(request):
     date_value = request.GET.get('date_value')
     turf = TurfDetails.objects.get(category='shuttle')
     booked_timeSlot = TurfBookingTable.objects.filter(category='shuttle', turf_name=turf,
-                                                      booking_date=date_value, book_status='pending')
+                                                      booking_date=date_value, book_status='success')
     time_slots = ShuttleTimeSlotTable.objects.exclude(
         time_slot__in=Subquery(booked_timeSlot.values('time_slot'))) & ShuttleTimeSlotTable.objects.filter(
         available=True).order_by('id')
@@ -147,7 +147,7 @@ def book_shuttle_turf(request):
         amount = request.POST["total_amount"]
         turf = TurfDetails.objects.get(category='shuttle')
         if TurfBookingTable.objects.filter(booking_date=booking_date, time_slot=timeslot, category='shuttle',
-                                           turf_name=turf).exists():
+                                           turf_name=turf, book_status='success').exists():
             messages.info(request, 'Already Booked')
             return redirect('turf_ShuttleBooking')
         else:
@@ -184,7 +184,7 @@ def available_time_slot_cricket(request):
     date_value = request.GET.get('date_value')
     turf = TurfDetails.objects.get(category='cricket')
     booked_timeSlot = TurfBookingTable.objects.filter(category='cricket', turf_name=turf,
-                                                      booking_date=date_value, book_status='pending')
+                                                      booking_date=date_value, book_status='success')
     time_slots = CricketTimeSlotTable.objects.exclude(
         time_slot__in=Subquery(booked_timeSlot.values('time_slot'))) & CricketTimeSlotTable.objects.filter(
         available=True).order_by('id')
@@ -220,7 +220,7 @@ def book_cricket_turf(request):
             amount = request.POST["total_amount"]
             turf = TurfDetails.objects.get(category='cricket')
             if TurfBookingTable.objects.filter(booking_date=booking_date, time_slot=timeslot, category='cricket',
-                                               turf_name=turf).exists():
+                                               turf_name=turf, book_status='success').exists():
                 messages.info(request, 'Already Booked')
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             else:
@@ -232,7 +232,7 @@ def book_cricket_turf(request):
                 request.session['turfOrder_id'] = booking.id
                 return redirect('../payment/turf_payment')
                 # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        return render(request, 'turf_CricketBookingPage.html')
+        # return render(request, 'turf_CricketBookingPage.html')
 
 
 """ ORDER HISTORY PAGE """
@@ -280,10 +280,10 @@ def review(request):
             image = request.POST["review_image"]
             turf = TurfDetails.objects.get(turf_name=turf_name)
             new_review = TurfReviewTable.objects.create(user=user, turf_name=turf, rating=rating, feedback=feedback,
-                                                       image=image)
+                                                        image=image)
             new_review.save()
             return redirect('turf_review')
-        return render(request, 'turf_ReviewPage.html', {'user': user, 'turf_name': turf , 'reviews': reviews})
+        return render(request, 'turf_ReviewPage.html', {'user': user, 'turf_name': turf, 'reviews': reviews})
 
 
 """LOGIN REDIRECT TO SAME PAGE"""

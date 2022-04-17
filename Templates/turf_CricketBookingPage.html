@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="{% static 'turf_booking/css/booking-page.css' %}">
 </head>
 <body class="background" background="{% static 'turf_booking/images/cricket02.jpg' %}">
-<div>
-    {% if messages %}
-    {% for message in messages %}
-    {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-    <div class="alert alert-primary" role="alert">
-        <p><h6 style="color:red"><b>{{ message }}</b></h6></p>
-    </div>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-</div>
 <h1 style="text-align: center;color: #e0ad20 ;"><u>Cricket Turf Booking</u></h1>
 <form action="book_cricket_turf" method="post" id="book_cricket" data-date-url="ajax-load_available_cricketTimeSlot"
       data-price-url="ajax-cricket_price">

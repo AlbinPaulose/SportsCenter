@@ -4,7 +4,8 @@ from django.db import models
 # Create your models here.
 book_status = (
     ("Pending", "pending"),
-    ("Paid", "paid"),
+    ("Success", "success"),
+    ("Failed", "failed"),
     ("Cancelled", "cancelled"),
     ("Refunded", "refunded")
 )
@@ -48,6 +49,7 @@ class TurfBookingTable(models.Model):
     time_slot = models.CharField(max_length=30)
     amount = models.IntegerField()
     note = models.TextField(blank=True)
+    payment_id = models.CharField(blank=True,max_length=100)
     book_status = models.CharField(max_length=20)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -75,5 +77,3 @@ class TurfReviewTable(models.Model):
     feedback = models.TextField(blank=True)
     image = models.ImageField(upload_to='review_images')
     reviewed_at = models.DateField(auto_now_add=True)
-
-
