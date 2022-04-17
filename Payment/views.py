@@ -28,12 +28,10 @@ class Turf_payment(View):
         return render(request, 'turf_PaymentPage.html', context)
 
 
-
 @csrf_exempt
 def turf_payment_success(request, order_id, payment_id):
     TurfBookingTable.objects.filter(id=order_id).update(payment_id=payment_id, book_status='success')
     return render(request, 'turf_PaymentSuccessPage.html')
-
 
 
 def paypal_cancel(request):

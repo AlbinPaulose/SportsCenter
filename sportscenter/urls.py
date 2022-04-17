@@ -24,7 +24,6 @@ urlpatterns = [
     path('turf/', include('TurfBookingApp.urls')),
     path('store/', include('SportsStoreApp.urls')),
     path('payment/', include('Payment.urls')),
-    path('paypal/', include('paypal.standard.ipn.urls')),
     path('admin/', admin.site.urls),
 ]
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

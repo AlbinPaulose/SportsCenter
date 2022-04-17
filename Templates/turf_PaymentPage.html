@@ -61,20 +61,10 @@
               data-prefill.name="Albin Paulose"
               data-prefill.email="albin.20pmc110@mariancollege.org" 
               data-theme.color="#3399cc"
-              redirect: true
-              data-handler= function (response){
-                if (typeof response.razorpay_payment_id == 'undefined' ||  response.razorpay_payment_id < 1) {
-                    redirect_url = '/paypal-cancel';
-                } else {
-                    redirect_url = '/payment_success';
-                }
-                location.href = redirect_url;>
-                
-              </script>
+              data-redirect: true></script>
+          
             
               
-            
-
         
         </form>
 
