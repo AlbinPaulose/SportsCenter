@@ -54,6 +54,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             {% if order.book_status == 'pending' %}
+                            <div class="pull-right"><label class="label label-danger">Incomplete</label></div>
+                            {% elif order.book_status == 'success' %}
                             <div class="pull-right"><label class="label label-success">Booked</label></div>
                             {% elif order.book_status == 'cancelled' %}
                             <div class="pull-right"><label class="label label-info">Cancelled</label></div>
@@ -64,7 +66,7 @@
                             <b>Time Slot:</b>{{order.time_slot}}<br/>
                             <b>Amount:</b>{{order.amount}}<br/>
                             <b>Order Id: </b>{{order.id}}<br/>
-                            {% if order.book_status == 'pending' %}
+                            {% if order.book_status == 'success' %}
                                 <a data-placement="top" class="btn btn-danger btn-xs glyphicon glyphicon-trash"
                                     href="{% url 'cancel_order' order.id %}" title="Danger"></a>
                             {% endif %}

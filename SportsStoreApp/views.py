@@ -203,7 +203,7 @@ def count_cart_products(request):
             return redirect('login_redirect')
 
 
-"""REMOVE PRODUCT FROM CART"""
+"""REMOVE PRODUCTS FROM CART"""
 
 
 def remove_cart_product(request, product_id, cart_id):
@@ -306,6 +306,7 @@ def checkout(request):
             product_count = 0
             products = CartTable.objects.filter(user_id=userid)
             user = User.objects.get(id=userid)
+            request.session['orderId'] = order_id
             for product in products:
                 product_count += 1
                 product_id = ProductsDetails.objects.get(id=product.product_id.id)
@@ -350,6 +351,27 @@ def booking_products(request):
                 return redirect('../payment/store_payment')
         else:
             return redirect('login_redirect')
+
+
+"""DELETING PRODUCTS FROM ORDER TABLE WHEN CLICKING BACK BUTTON IN CHECKOUT PAGE AND REDIRECTING TO HOME PAGE"""
+
+
+def delete_products(request):
+    if 'userid' not in request.session:
+        return redirect('login_redirect')
+    else:
+        if 'orderId' not in request.session:
+            return redirect('show_cart')
+        else:
+            order_id = request.session['orderId']
+            OrderTable.objects.filter(orderId=order_id).delete()
+            userid = request.session['userid']
+            user_details = User.objects.get(id=userid)
+            category_all = categories.objects.all()[:12]
+            products = ProductsDetails.objects.order_by('-childcategory').distinct('childcategory')[:9]
+            cart_count = count_cart_products(request)
+            return render(request, "store_homepage.html",
+                          {'categories': category_all, 'products': products, 'user': user_details, 'cart_count': cart_count})
 
 
 """LOGIN REDIRECT TO SAME PAGE"""

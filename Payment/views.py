@@ -1,13 +1,13 @@
-# from django.db.models.fields import json
 import json
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from sportscenter.settings import RAZORPAY_API_KEY, RAZORPAY_API_SECRET_KEY
 from django.contrib import messages
 from TurfBookingApp.models import TurfBookingTable
-from SportsStoreApp.models import FinalOrderTable
+from SportsStoreApp.models import FinalOrderTable, CartTable
 import razorpay
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -69,25 +69,27 @@ def callback(request):
         order.razorpay_signatureId = signature_id
         order.save()
         if not verify_signature(request.POST):
+            print(".......abj......")
             order.status = 'success'
             order.save()
-            return render(request, "callback.html", context={"status": order.status})
+            return render(request, "store_Callback.html", context={"status": order.status})
         else:
             order.status = 'success'
             order.save()
-            return render(request, "callback.html", context={"status": order.status})
+            user = order.user
+            CartTable.objects.filter(user_id=user.id).delete()
+            return render(request, "store_Callback.html", context={"status": order.status})
     else:
         payment_id = json.loads(request.POST.get("error[metadata]")).get("payment_id")
         provider_order_id = json.loads(request.POST.get("error[metadata]")).get(
             "order_id"
         )
-        print('......fail is to.....')
         order = FinalOrderTable.objects.get(razorpay_orderId=provider_order_id)
         order.razorpay_paymentId = payment_id
         order.razorpay_orderId = provider_order_id
         order.status = 'failed'
         order.save()
-        return render(request, "callback.html", context={"status": order.status})
+        return render(request, "store_Callback.html", context={"status": order.status})
 
 
 def paypal_cancel(request):
