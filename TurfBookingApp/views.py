@@ -277,10 +277,8 @@ def review(request):
             turf_name = request.POST["turf_name"]
             rating = request.POST["rating"]
             feedback = request.POST["feedback"]
-            image = request.POST["review_image"]
             turf = TurfDetails.objects.get(turf_name=turf_name)
-            new_review = TurfReviewTable.objects.create(user=user, turf_name=turf, rating=rating, feedback=feedback,
-                                                        image=image)
+            new_review = TurfReviewTable.objects.create(user=user, turf_name=turf, rating=rating, feedback=feedback)
             new_review.save()
             return redirect('turf_review')
         return render(request, 'turf_ReviewPage.html', {'user': user, 'turf_name': turf, 'reviews': reviews})

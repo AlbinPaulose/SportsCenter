@@ -19,5 +19,6 @@ urlpatterns = [
     path('add-remove-wishlist', views.add_remove_wishlist, name="add-remove-wishlist"),
     path('add-ToCart', views.add_ToCart, name='add-ToCart'),
     path('checkout', views.checkout, name='checkout'),
+    path('booking_product',views.booking_products,name='booking_product'),
     path('logout', views.logout, name="logout"),
 ]

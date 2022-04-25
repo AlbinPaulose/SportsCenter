@@ -5,8 +5,11 @@ from django.conf import settings
 
 # Create your models here.
 order_status = (
-    ("not paid", "not paid"),
-    ("payment confirmed", "payment confirmed")
+    ("Pending", "pending"),
+    ("Success", "success"),
+    ("Failed", "failed"),
+    ("Cancelled", "cancelled"),
+    ("Refunded", "refunded")
 )
 
 
@@ -35,13 +38,16 @@ class OrderTable(models.Model):
     price = models.IntegerField()
     discount = models.IntegerField(default=0)
     subtotal = models.IntegerField()
-    status = models.CharField(default='not paid', choices=order_status, max_length=100)
+    status = models.CharField(default='pending', choices=order_status, max_length=100)
 
 
 class FinalOrderTable(models.Model):
     orderId = models.IntegerField()
+    razorpay_orderId = models.CharField(max_length=200, blank=True)
+    razorpay_signatureId = models.CharField(max_length=200, blank=True)
+    razorpay_paymentId = models.CharField(max_length=200, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    deliver_date = models.DateField()
+    delivery_date = models.DateField()
     address = models.TextField()
     district = models.CharField(max_length=50)
     city = models.CharField(max_length=30)
@@ -49,4 +55,4 @@ class FinalOrderTable(models.Model):
     phone = models.CharField(max_length=10)
     total_price = models.IntegerField()
     no_of_products = models.IntegerField()
-    status = models.CharField(max_length=20, choices=order_status, default='payment confirmed')
+    status = models.CharField(max_length=20, choices=order_status, default='pending')

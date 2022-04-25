@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from Index.models import *
-from .models import CartTable, WishlistTable, OrderTable
+from .models import CartTable, WishlistTable, OrderTable, FinalOrderTable
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.http import HttpResponseRedirect, JsonResponse
+from datetime import datetime, timedelta
 
 # Create your views here.
 """MAIN HOME PAGE"""
@@ -295,6 +296,7 @@ def checkout(request):
         else:
             total_amount = request.session['totalAmount']
             userid = request.session['userid']
+            delivery_date = (datetime.now() + timedelta(days=14)).date()
             cart_count = count_cart_products(request)
             order_id = OrderTable.objects.order_by('orderId').last()
             if order_id is None:
@@ -315,10 +317,10 @@ def checkout(request):
                 order.save()
             return render(request, 'store_Checkout.html',
                           {'cart_count': cart_count, 'total': total_amount, 'orderId': order_id,
-                           'productsCount': product_count,'user':user})
+                           'productsCount': product_count, 'user': user, 'deliveryDate': delivery_date})
 
 
-"""BOOKING THE PRODUCTS AND ADD THE PRODUCTS TO THE FINAL ORDER TABLE"""
+"""ORDER THE PRODUCTS AND ADD THE PRODUCTS TO THE FINAL ORDER TABLE"""
 
 
 def booking_products(request):
@@ -328,7 +330,24 @@ def booking_products(request):
         userid = request.session['userid']
         if request.user.is_authenticated:
             if request.method == 'POST':
-                pass
+                address = request.POST['address']
+                district = request.POST['district']
+                city = request.POST['city']
+                pincode = request.POST['pincode']
+                phone = request.POST['phone']
+                delivery_date = request.POST['delivery_date']
+                order_id = request.POST['orderId']
+                no_of_products = request.POST['productsCount']
+                total_price = request.POST['totalPrice']
+                user = User.objects.get(id=userid)
+                order = FinalOrderTable.objects.create(orderId=order_id, delivery_date=delivery_date, address=address,
+                                                       district=district,
+                                                       city=city, pincode=pincode, phone=phone, total_price=total_price,
+                                                       no_of_products=no_of_products,
+                                                       user=user)
+                order.save()
+                request.session['storeOrder_id'] = order_id
+                return redirect('../payment/store_payment')
         else:
             return redirect('login_redirect')
 
