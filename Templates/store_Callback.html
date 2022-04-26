@@ -1,13 +1,48 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+     <!-- include alertify.css -->
+<link rel="stylesheet" href="{% static 'alertify/css/alertify.css' %}">
+
+<!-- include boostrap theme  -->
+<link rel="stylesheet" href="{% static 'alertify/css/themes/bootstrap.css' %}">
+
 </head>
 <body>
-    <a href="{% url 'store_homepage'%}" class=" btn btn-primary mt-3">OK</a>
+    <!-- <a href="{% url 'store_homepage'%}" class=" btn btn-primary mt-3">OK</a>
     <p>
         {{status}}
-    </p>
+    </p> -->
+   
+<!-- include alertify script -->
+<script src="{% static 'alertify/alertify.js' %}"></script>
+<script>
+    var message = "{{status}}";
+    console.log(message);
+    if(message == 'success')
+    {
+        alertify.alert('Order Confirmed', 'Your Order is Placed',function(){
+            location.href="{% url 'store_homepage'%}";
+        });
+        
+    }
+    else if(message=='failed')
+    {
+        alertify.alert('Error','Something went wrong!!',function(){
+            location.href="{% url 'store_homepage'%}";
+        });
+        
+    }
+    else
+    {
+        alertify.alert('Error','Something went wrong!!',function(){
+            location.href="{% url 'store_homepage'%}";
+        });
+       
+    }    
+</script>
 </body>
 </html>

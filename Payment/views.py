@@ -72,7 +72,7 @@ def callback(request):
         if not verify_signature(request.POST):
             order.status = 'success'
             order.save()
-            return render(request, "store_Callback.html", context={"status": order.status})
+            return render(request, "store_Callback.html", {"status": order.status})
         else:
             order_id = order.orderId
             OrderTable.objects.filter(orderId=order_id).update(status='processing')
@@ -87,7 +87,7 @@ def callback(request):
             CartTable.objects.filter(user_id=user.id).delete()
             FinalOrderTable.objects.filter(orderId=order_id).update(status='success')
             OrderTable.objects.filter(orderId=order_id).update(status='success')
-            return render(request, "store_Callback.html", context={"status": order.status})
+            return render(request, "store_Callback.html", {"status": 'success'})
     else:
         payment_id = json.loads(request.POST.get("error[metadata]")).get("payment_id")
         provider_order_id = json.loads(request.POST.get("error[metadata]")).get(
@@ -100,7 +100,6 @@ def callback(request):
         order.save()
         order_id = order.orderId
         OrderTable.objects.filter(orderId=order_id).update(status='failed')
-
-        return render(request, "store_Callback.html", context={"status": order.status})
+        return render(request, "store_Callback.html", {"status": order.status})
 
 
