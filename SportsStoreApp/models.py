@@ -5,11 +5,11 @@ from django.conf import settings
 
 # Create your models here.
 order_status = (
-    ("Pending", "pending"),
-    ("Success", "success"),
-    ("Failed", "failed"),
-    ("Cancelled", "cancelled"),
-    ("Refunded", "refunded")
+    ("pending", "pending"),
+    ("success", "success"),
+    ("failed", "failed"),
+    ("cancelled", "cancelled"),
+    ("refunded", "refunded")
 )
 
 

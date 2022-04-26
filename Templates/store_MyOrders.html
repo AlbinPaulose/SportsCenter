@@ -72,11 +72,15 @@
                                 </td>
                                 <td>
                                     {% if order.status == 'failed' %}
-                                        <h6  style="color:red">{{order.status}}</h6>
+                                        <h7  style="color:red">{{order.status}}</h7>
                                     {% elif order.status == 'pending' %}
                                         <h7  style="color:red">Not completed</h7>
                                     {% elif order.status == 'success'%}
-                                        <h6  style="color:green">Ordered</h6>        
+                                        <h7  style="color:green">Ordered</h7> 
+                                    {% elif order.status == 'cancelled' %}
+                                        <h7  style="color:grey">refund processing</h7>
+                                    {% elif order.status == 'refunded' %}
+                                        <h7  style="color:grey">completed</h7>    
                                     {% endif %}
                                 </td>
                                 <td>
@@ -97,9 +101,9 @@
                                     {% elif order.status == 'refunded' %}
                                          <br><h6  style="color:orange"><b>Refund Completed</b></h6>
                                     {% elif order.status == 'pending' %}
-                                         <br><h4  style="color:red"><b>Your order is not completed</b></h4>
+                                         <br><h6  style="color:red"><b>Your order is not completed</b></h6>
                                     {% elif order.status == 'success' %}
-                                         <br><h4  style="color:green"><b>Your item will be delivered on {{order.delivery_date}}</b></h4>
+                                         <br><h6  style="color:green"><b>Your item will be delivered on {{order.delivery_date}}</b></h6>
                                     {% endif %}
                                 </td>
                             </tr>
