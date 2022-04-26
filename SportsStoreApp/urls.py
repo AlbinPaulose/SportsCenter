@@ -20,6 +20,9 @@ urlpatterns = [
     path('add-ToCart', views.add_ToCart, name='add-ToCart'),
     path('checkout', views.checkout, name='checkout'),
     path('booking_product', views.booking_products, name='booking_product'),
-    path('delete_products',views.delete_products,name='delete_products'),
+    path('delete_products', views.delete_products, name='delete_products'),
+    path('my_orders', views.my_orders, name='my_orders'),
+    path('order_details/<int:order_id>/<int:total_price>/', views.order_details, name='order_details'),
+    path('cancel_orders/<int:order_id>/', views.cancel_order, name='cancel_orders'),
     path('logout', views.logout, name="logout"),
 ]

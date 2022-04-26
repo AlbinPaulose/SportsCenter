@@ -1,0 +1,114 @@
+{% extends "store_homepage.html" %}
+{% load static %}
+{% block heading %}
+    	<div id="top_nav" class="ddsmoothmenu">
+            <ul>
+                    <li><a href="{% url 'store_homepage' %}">Home</a></li>
+                    <li><a href="{% url 'products_all' %}">Products</a>
+                    <ul>
+                        {% for subcategory in subcategories %}
+                            <li><a href="{% url 'subcategory_productsAll' subcategory %}">{{subcategory}}</a></li>
+                        {% endfor %}
+                  </ul>
+                </li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="{% url 'logout' %}">Log Out</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of ddsmoothmenu -->
+{% endblock heading %}
+{% block category %}
+{% endblock category %}
+{% block bestsellers %}
+{% endblock bestsellers %}
+{% block content %}
+<section class="breadcrumb-section set-bg" data-setbg="{% static 'img/breadcrumb.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>My Orders</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shoping Cart Section Begin -->
+<section class="shoping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shoping__cart__table">
+                    <table width="680px" cellspacing="0" cellpadding="5">
+                        <thead>
+                            <tr style="font-size: larger;">
+                                <th>Order Id</th>
+                                <th>No.of Products</th>
+                                <th>Delivery Date</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr class="cartRow" style="text-align: center;">
+                                <td class="shoping__cart__price">
+                                    {{order.orderId}}
+                                </td>
+                                <td class="shoping__cart__quantity">
+                                    {{order.no_of_products}}
+                                </td>
+                                <td>
+                                    {% if order.status == 'success'%}
+                                        {{order.delivery_date}}
+                                    {% endif %}    
+                                </td>
+                                <td>
+                                    {{order.total_price}}
+                                </td>
+                                <td>
+                                    {% if order.status == 'failed' %}
+                                        <h6  style="color:red">{{order.status}}</h6>
+                                    {% elif order.status == 'pending' %}
+                                        <h7  style="color:red">Not completed</h7>
+                                    {% elif order.status == 'success'%}
+                                        <h6  style="color:green">Ordered</h6>        
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'order_details' order.orderId  order.total_price %}">View Details</a>
+                                </td>
+                                <td>
+                                    {% if order.status == 'cancelled' %}
+                                        <a  class="primary-btn">CANCELLED</a>
+                                    {% elif order.status == 'success' %}
+                                        <a href="{% url 'cancel_orders' order.orderId %}" class="primary-btn">CANCEL ORDER</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="8">
+                                    {% if order.status == 'cancelled' %}
+                                        <br><h6  style="color:orange"><b>Amount will be refunded within 2 days</b></h6>
+                                    {% elif order.status == 'refunded' %}
+                                         <br><h6  style="color:orange"><b>Refund Completed</b></h6>
+                                    {% elif order.status == 'pending' %}
+                                         <br><h4  style="color:red"><b>Your order is not completed</b></h4>
+                                    {% elif order.status == 'success' %}
+                                         <br><h4  style="color:green"><b>Your item will be delivered on {{order.delivery_date}}</b></h4>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

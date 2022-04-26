@@ -1,0 +1,75 @@
+{% extends "store_homepage.html" %}
+{% load static %}
+{% block heading %}
+    	<div id="top_nav" class="ddsmoothmenu">
+            <ul>
+                    <li><a href="{% url 'store_homepage' %}">Home</a></li>
+                    <li><a href="{% url 'products_all' %}">Products</a>
+                    <ul>
+                        {% for subcategory in subcategories %}
+                            <li><a href="{% url 'subcategory_productsAll' subcategory %}">{{subcategory}}</a></li>
+                        {% endfor %}
+                  </ul>
+                </li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="{% url 'logout' %}">Log Out</a></li>
+            </ul>
+            <br style="clear: left" />
+        </div> <!-- end of ddsmoothmenu -->
+{% endblock heading %}
+{% block category %}
+{% endblock category %}
+{% block bestsellers %}
+{% endblock bestsellers %}
+{% block content %}
+        <div id="content" class="float_r">
+        	<h1>Order Details</h1>
+        	<table width="680px" cellspacing="0" cellpadding="5" class="cartTable">
+                   	  <tr bgcolor="#ddd">
+                        	<th width="220" align="left">Image </th> 
+                        	<th width="180" align="left">Description </th> 
+                       	  	<th width="100" align="center">Quantity </th> 
+                        	<th width="60" align="right">Price </th> 
+                        	<th width="60" align="right">Total </th> 
+                        	<th width="90"> </th>
+                            
+                      </tr>
+                        
+                    {% for product in orders %}
+                    	<tr class="cartRow">
+                            <form class="cartDetails" method="post">
+                                {% csrf_token %}
+                                <td><img src="{{product.product.product_image.url}}" alt="image 1" /></a></td> 
+                                <td>{{product.product.product_details}}<br>
+                                    {% if product.product.product_size %} 
+                                        <span>Size: </span>{{product.product.product_size}} 
+                                    {% endif %}      
+                                </td> 
+                                <td align="center">{{product.quantity}}</td>
+                                <td align="right">{{product.price}}</td> 
+                                <td align="right">
+                                    {{product.subtotal}}
+                                </td>
+                            </form>
+						</tr>
+                        
+                    {% endfor %}
+                            <tr>
+                                
+                                <td align="right" style="background:#ddd; font-weight:bold">Total:</td>
+                                <td align="right" style="background:#ddd; font-weight:bold">Rs.{{total_price}}</td>
+                                <td style="background:#ddd; font-weight:bold"> </td>
+                            </tr>
+                            
+                            
+                        </table>
+			</div>
+        <div class="cleaner"></div>    
+                    
+    </div> <!-- END of templatemo_main -->
+    
+    
+{% endblock content %}
+
+</body>
+</html>

@@ -3,7 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from sportscenter.settings import RAZORPAY_API_KEY, RAZORPAY_API_SECRET_KEY
 from django.contrib import messages
 from TurfBookingApp.models import TurfBookingTable
-from SportsStoreApp.models import FinalOrderTable, CartTable
+from SportsStoreApp.models import FinalOrderTable, CartTable, OrderTable
+from Index.models import ProductsDetails
 import razorpay
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -69,15 +70,23 @@ def callback(request):
         order.razorpay_signatureId = signature_id
         order.save()
         if not verify_signature(request.POST):
-            print(".......abj......")
             order.status = 'success'
             order.save()
             return render(request, "store_Callback.html", context={"status": order.status})
         else:
-            order.status = 'success'
-            order.save()
+            order_id = order.orderId
+            OrderTable.objects.filter(orderId=order_id).update(status='processing')
+            orders = OrderTable.objects.filter(orderId=order_id)
+            for order in orders:
+                product_id = order.product
+                qty = order.quantity
+                product = ProductsDetails.objects.get(id=product_id.id)
+                product.product_stock = int(product.product_stock)-int(qty)
+                product.save()
             user = order.user
             CartTable.objects.filter(user_id=user.id).delete()
+            FinalOrderTable.objects.filter(orderId=order_id).update(status='success')
+            OrderTable.objects.filter(orderId=order_id).update(status='success')
             return render(request, "store_Callback.html", context={"status": order.status})
     else:
         payment_id = json.loads(request.POST.get("error[metadata]")).get("payment_id")
@@ -89,10 +98,9 @@ def callback(request):
         order.razorpay_orderId = provider_order_id
         order.status = 'failed'
         order.save()
+        order_id = order.orderId
+        OrderTable.objects.filter(orderId=order_id).update(status='failed')
+
         return render(request, "store_Callback.html", context={"status": order.status})
 
 
-def paypal_cancel(request):
-    messages.error(request, "Your booking has been cancelled")
-    print(".failed")
-    return redirect('turf_homepage')

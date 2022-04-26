@@ -365,13 +365,57 @@ def delete_products(request):
         else:
             order_id = request.session['orderId']
             OrderTable.objects.filter(orderId=order_id).delete()
-            userid = request.session['userid']
-            user_details = User.objects.get(id=userid)
-            category_all = categories.objects.all()[:12]
-            products = ProductsDetails.objects.order_by('-childcategory').distinct('childcategory')[:9]
-            cart_count = count_cart_products(request)
-            return render(request, "store_homepage.html",
-                          {'categories': category_all, 'products': products, 'user': user_details, 'cart_count': cart_count})
+            return redirect('store_homepage')
+
+
+"""VIEWING MY ORDERS"""
+
+
+def my_orders(request):
+    if 'userid' not in request.session:
+        return redirect('login_redirect')
+    else:
+        userid = request.session['userid']
+        if request.user.is_authenticated:
+            user = User.objects.get(id=userid)
+            orders = FinalOrderTable.objects.filter(user=user)
+            return render(request, 'store_MyOrders.html', {'orders': orders})
+        return redirect('login_redirect')
+
+
+"""VIEWING ORDER DETAILS"""
+
+
+def order_details(request, order_id, total_price):
+    if 'userid' not in request.session:
+        return redirect('login_redirect')
+    else:
+        if request.user.is_authenticated:
+            products_details = OrderTable.objects.filter(orderId=order_id)
+            return render(request, 'store_MyOrderDetails.html',
+                          {'orders': products_details, 'total_price': total_price})
+        return redirect('login_redirect')
+
+
+"""CANCEL ORDER"""
+
+
+def cancel_order(request, order_id):
+    if 'userid' not in request.session:
+        return redirect('login_redirect')
+    else:
+        if request.user.is_authenticated:
+            FinalOrderTable.objects.filter(orderId=order_id).update(status='cancelled')
+            orders = OrderTable.objects.filter(orderId=order_id)
+            for order in orders:
+                product = order.product
+                qty = order.quantity
+                product = ProductsDetails.objects.get(id=product.id)
+                product.product_stock = int(product.product_stock) + int(qty)
+                product.save()
+            OrderTable.objects.filter(orderId=order_id).update(status='cancelled')
+            return redirect('my_orders')
+        return redirect('login_redirect')
 
 
 """LOGIN REDIRECT TO SAME PAGE"""

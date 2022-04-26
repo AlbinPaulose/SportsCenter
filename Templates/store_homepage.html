@@ -56,7 +56,7 @@ ddsmoothmenu.init({
     	<div id="site_title"><h3>Hii, <b><i>{{user.first_name}}</i></b></h3></div>
         <div id="header_right">
         	<p>
-	        <a href="{% url 'main_homepage' %}">Home Page</a> | <a href="{% url 'show_wishlist' %}">My Wishlist</a> | <a href="{% url 'show_cart' %}">My Cart</a> | <a href="#">My Orders</a> | <a href="{% url 'logout' %}">Log Out</a></p>
+	        <a href="{% url 'main_homepage' %}">Home Page</a> | <a href="{% url 'show_wishlist' %}">My Wishlist</a> | <a href="{% url 'show_cart' %}">My Cart</a> | <a href="{% url 'my_orders' %}">My Orders</a> | <a href="{% url 'logout' %}">Log Out</a></p>
             <p>
             	Shopping Cart: <strong>{{cart_count}} items</strong> ( <a href="{% url 'show_cart' %}">Show Cart</a> )
 			</p>

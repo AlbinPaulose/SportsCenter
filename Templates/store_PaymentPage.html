@@ -1,0 +1,37 @@
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <form>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+        var options = {
+            key: "{{razorpay_key}}",
+            amount: "{{amount}}", 
+            currency: "INR",
+        
+            description: "Test Transaction",
+            image: "https://example.com/your_logo",
+            order_id: "{{payment_id}}",
+            callback_url: "{{callback_url}}",
+            redirect: true,
+            prefill: {
+                "name": "Albin Paulose",
+                "email": "albin.20pmc110@mariancollege.org",
+                "contact": "9567803335"
+            },
+            notes: {
+                "address": "Razorpay Corporate Office"
+            },
+            theme: {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+        </script>
+        <input type="hidden" custom="Hidden Element" name="hidden">
+    </form>
+</body>
+</html>
